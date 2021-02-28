@@ -8,39 +8,71 @@ public class Planet : MonoBehaviour
     public bool IsStatic;
     public float Mass;
     public float StartSpeed;
-    public Vector2 StartDirection;
     public Guid ID;
     public PlanetsMaster PlanetsMaster;
+    public Vector3 StartDirection;
+    //public Vector3 StartDirection
+    //{
+    //    get
+    //    {
+    //        Vector3 vec = StartDirection;
+    //        return vec.normalized;
+    //    }
+    //}
 
-    private float speed;
-    private Vector2 direction;
-    public bool isActive;
+    private Vector3 direction;
+    private bool isActive = false;
     private bool calculationDone = false;
-    private Dictionary<Guid, Planet> interactions;
+    private Dictionary<Guid, Planet> localDictionary;
 
-    void Start()
+
+    void Awake()
     {
         ID = Guid.NewGuid();
-        interactions = new Dictionary<Guid, Planet>();
+        localDictionary = new Dictionary<Guid, Planet>();
+        direction = StartDirection * StartSpeed;
+    }
+
+    public void Calculate()
+    {
+        if (!IsStatic)
+        {
+            Planet otherPlanet;
+            float distance;
+            float force;
+            Vector3 newDirection;
+            foreach (var item in localDictionary)
+            {
+                if(item.Value.ID != ID)
+                {
+                    otherPlanet = item.Value;
+                    newDirection = otherPlanet.gameObject.transform.position - gameObject.transform.position;
+                    distance = newDirection.magnitude;
+                    newDirection.Normalize();
+                    force = (otherPlanet.Mass / Mathf.Pow(distance, 2)) * 0.00067f;
+                    newDirection += newDirection * force;
+                    direction += newDirection;
+                }
+                
+            }
+        }
+        calculationDone = true;
+
+    }
+
+    public void Move()
+    {
+        if(!IsStatic)
+        {
+            transform.position += direction * 0.1f;
+            Calculate();
+        }
+        
     }
 
 
-    public void Active(bool value)
+    public void ChangeLocalDictionary(Dictionary<Guid, Planet> dict)
     {
-        if (value)
-        {
-            PlanetsMaster.ChangeDictionary(ID, this);
-        }
-        else
-        {
-            PlanetsMaster.ChangeDictionary(ID);
-        }
-        isActive = value;
-    }
-
-    public void ChangeDictionary(Dictionary<Guid, Planet> dict)
-    {
-        dict.Remove(ID);
-        interactions = dict;
+        localDictionary = new Dictionary<Guid, Planet>(dict);
     }
 }

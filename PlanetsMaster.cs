@@ -5,41 +5,69 @@ using UnityEngine;
 
 public class PlanetsMaster : MonoBehaviour
 {
+
+    // _______
+    bool start = false;
+    // _______
     public Dictionary<Guid, Planet> InteractionsDictonary;
 
-    public void ChangeDictionary(Guid id)
-    {
-        if (InteractionsDictonary.ContainsKey(id))
-        {
-            InteractionsDictonary.Remove(id);
-            Planet planet;
-            foreach (var item in InteractionsDictonary)
-            {
-                planet = item.Value;
-                planet.ChangeDictionary(InteractionsDictonary);
-            }
-        }
+
+    //public void ChangeDictionary(Guid id)
+    //{
+    //    if (InteractionsDictonary.ContainsKey(id))
+    //    {
+    //        InteractionsDictonary.Remove(id);
+    //        Planet planet;
+    //        foreach (var item in InteractionsDictonary)
+    //        {
+    //            planet = item.Value;
+    //            planet.ChangeLocalDictionary(InteractionsDictonary);
+    //        }
+    //    }
         
-    }
+    //}
 
     public void ChangeDictionary(Guid id, Planet pl)
     {
-        if(!InteractionsDictonary.ContainsKey(id))
+        Dictionary<Guid, Planet> tempDict = new Dictionary<Guid, Planet>(InteractionsDictonary);
+        if(!tempDict.ContainsKey(id))
         {
             InteractionsDictonary.Add(id, pl);
             Planet planet;
             foreach (var item in InteractionsDictonary)
             {
                 planet = item.Value;
-                planet.ChangeDictionary(InteractionsDictonary);
+                planet.ChangeLocalDictionary(InteractionsDictonary);
             }
         }
         
     }
-
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.Space))
+        {
+            start = true;
+        }
+        if (start)
+        {
+            foreach(var item in InteractionsDictonary)
+            {
+                item.Value.Move();
+            }
+        }
+    }
     private void Start()
     {
         InteractionsDictonary = new Dictionary<Guid, Planet>();
+        GameObject[] gm = GameObject.FindGameObjectsWithTag("Finish");
+        foreach (GameObject item in gm)
+        {
+            InteractionsDictonary.Add(item.GetComponent<Planet>().ID, item.GetComponent<Planet>());
+        }
+        foreach (GameObject item in gm)
+        {
+            item.GetComponent<Planet>().ChangeLocalDictionary(InteractionsDictonary);
+        }
     }
 
 
