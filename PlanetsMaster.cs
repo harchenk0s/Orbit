@@ -10,6 +10,7 @@ public class PlanetsMaster : MonoBehaviour
     bool start = false;
     // _______
     public Dictionary<Guid, Planet> InteractionsDictonary;
+    public int count = 0;
 
 
     //public void ChangeDictionary(Guid id)
@@ -42,19 +43,25 @@ public class PlanetsMaster : MonoBehaviour
         }
         
     }
-    private void Update()
+    private void FixedUpdate()
     {
+            if (start)
+            {
+                foreach (var item in InteractionsDictonary)
+                {
+                    item.Value.Calculate();
+                }
+                foreach (var item in InteractionsDictonary)
+                {
+                    item.Value.Move();
+                }
+            
+        }
         if (Input.GetKey(KeyCode.Space))
         {
             start = true;
         }
-        if (start)
-        {
-            foreach(var item in InteractionsDictonary)
-            {
-                item.Value.Move();
-            }
-        }
+        
     }
     private void Start()
     {

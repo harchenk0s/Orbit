@@ -47,13 +47,12 @@ public class Planet : MonoBehaviour
                 {
                     otherPlanet = item.Value;
                     newDirection = otherPlanet.gameObject.transform.position - gameObject.transform.position;
-                    distance = newDirection.magnitude;
+                    distance = newDirection.magnitude * 10;
                     newDirection.Normalize();
-                    force = (otherPlanet.Mass / Mathf.Pow(distance, 2)) * 0.00067f;
-                    newDirection += newDirection * force;
+                    force = otherPlanet.Mass / Mathf.Pow(distance, 2);
+                    newDirection *= force;
                     direction += newDirection;
                 }
-                
             }
         }
         calculationDone = true;
@@ -65,7 +64,6 @@ public class Planet : MonoBehaviour
         if(!IsStatic)
         {
             transform.position += direction * 0.1f;
-            Calculate();
         }
         
     }
