@@ -59,13 +59,12 @@ public class Planet : MonoBehaviour
 
     }
 
-    public void Move()
+    public void Move(float coef)
     {
         if(!IsStatic)
         {
             transform.position += direction * 0.1f;
         }
-        
     }
 
 

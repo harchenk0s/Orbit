@@ -2,15 +2,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlanetsMaster : MonoBehaviour
 {
 
     // _______
     bool start = false;
+    private int count = 0;
+    [Range(0, 100)]
+    public int TimeScale = 0;
+    public Text text;
     // _______
     public Dictionary<Guid, Planet> InteractionsDictonary;
-    public int count = 0;
+   
 
 
     //public void ChangeDictionary(Guid id)
@@ -43,8 +48,15 @@ public class PlanetsMaster : MonoBehaviour
         }
         
     }
+    private void Update()
+    {
+        text.text = count.ToString();
+    }
     private void FixedUpdate()
     {
+        count++;
+        if(count > TimeScale)
+        {
             if (start)
             {
                 foreach (var item in InteractionsDictonary)
@@ -53,13 +65,15 @@ public class PlanetsMaster : MonoBehaviour
                 }
                 foreach (var item in InteractionsDictonary)
                 {
-                    item.Value.Move();
+                    item.Value.Move(count);
                 }
-            
+            }
+            count = 0;
         }
+        
         if (Input.GetKey(KeyCode.Space))
         {
-            start = true;
+                start = true;
         }
         
     }
