@@ -21,33 +21,32 @@ public class Planet : MonoBehaviour
     //}
 
     private Vector3 direction;
-    private bool isActive = false;
-    private bool calculationDone = false;
-    private Dictionary<Guid, Planet> localDictionary;
+    public bool isActive = true;
+    private Dictionary<Guid, Planet> ActivePlanets;
 
 
     void Awake()
     {
         ID = Guid.NewGuid();
-        localDictionary = new Dictionary<Guid, Planet>();
+        ActivePlanets = new Dictionary<Guid, Planet>();
         direction = StartDirection * StartSpeed;
     }
 
     public void Calculate()
     {
-        if (!IsStatic)
+        if (!IsStatic && isActive)
         {
             Planet otherPlanet;
             float distance;
             float force;
             Vector3 newDirection;
-            foreach (var item in localDictionary)
+            foreach (var item in ActivePlanets)
             {
                 if(item.Value.ID != ID)
                 {
                     otherPlanet = item.Value;
-                    newDirection = otherPlanet.gameObject.transform.position - gameObject.transform.position;
-                    distance = newDirection.magnitude * 10;
+                    newDirection = otherPlanet.transform.position - transform.position;
+                    distance = newDirection.magnitude * 10; // The higher the coefficient, the greater the distance of one unit
                     newDirection.Normalize();
                     force = otherPlanet.Mass / Mathf.Pow(distance, 2);
                     newDirection *= force;
@@ -55,13 +54,12 @@ public class Planet : MonoBehaviour
                 }
             }
         }
-        calculationDone = true;
 
     }
 
-    public void Move(float coef)
+    public void Move()
     {
-        if(!IsStatic)
+        if(!IsStatic && isActive)
         {
             transform.position += direction * 0.1f;
         }
@@ -70,6 +68,6 @@ public class Planet : MonoBehaviour
 
     public void ChangeLocalDictionary(Dictionary<Guid, Planet> dict)
     {
-        localDictionary = new Dictionary<Guid, Planet>(dict);
+        ActivePlanets = new Dictionary<Guid, Planet>(dict);
     }
 }

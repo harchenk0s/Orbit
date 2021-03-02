@@ -9,12 +9,9 @@ public class PlanetsMaster : MonoBehaviour
 
     // _______
     bool start = false;
-    private int count = 0;
-    [Range(0, 100)]
-    public int TimeScale = 0;
     public Text text;
     // _______
-    public Dictionary<Guid, Planet> InteractionsDictonary;
+    private Dictionary<Guid, Planet> ActivePlanets;
    
 
 
@@ -35,41 +32,34 @@ public class PlanetsMaster : MonoBehaviour
 
     public void ChangeDictionary(Guid id, Planet pl)
     {
-        Dictionary<Guid, Planet> tempDict = new Dictionary<Guid, Planet>(InteractionsDictonary);
+        Dictionary<Guid, Planet> tempDict = new Dictionary<Guid, Planet>(ActivePlanets);
         if(!tempDict.ContainsKey(id))
         {
-            InteractionsDictonary.Add(id, pl);
+            ActivePlanets.Add(id, pl);
             Planet planet;
-            foreach (var item in InteractionsDictonary)
+            foreach (var item in ActivePlanets)
             {
                 planet = item.Value;
-                planet.ChangeLocalDictionary(InteractionsDictonary);
+                planet.ChangeLocalDictionary(ActivePlanets);
             }
         }
         
     }
-    private void Update()
-    {
-        text.text = count.ToString();
-    }
+
     private void FixedUpdate()
     {
-        count++;
-        if(count > TimeScale)
-        {
             if (start)
             {
-                foreach (var item in InteractionsDictonary)
+                foreach (var item in ActivePlanets)
                 {
                     item.Value.Calculate();
                 }
-                foreach (var item in InteractionsDictonary)
+                foreach (var item in ActivePlanets)
                 {
-                    item.Value.Move(count);
+                    item.Value.Move();
                 }
             }
-            count = 0;
-        }
+        
         
         if (Input.GetKey(KeyCode.Space))
         {
@@ -79,15 +69,15 @@ public class PlanetsMaster : MonoBehaviour
     }
     private void Start()
     {
-        InteractionsDictonary = new Dictionary<Guid, Planet>();
-        GameObject[] gm = GameObject.FindGameObjectsWithTag("Finish");
-        foreach (GameObject item in gm)
+        ActivePlanets = new Dictionary<Guid, Planet>();
+        Planet[] allPlanets = GameObject.FindObjectsOfType<Planet>();
+        foreach (Planet item in allPlanets)
         {
-            InteractionsDictonary.Add(item.GetComponent<Planet>().ID, item.GetComponent<Planet>());
+            ActivePlanets.Add(item.ID, item);
         }
-        foreach (GameObject item in gm)
+        foreach (Planet item in allPlanets)
         {
-            item.GetComponent<Planet>().ChangeLocalDictionary(InteractionsDictonary);
+            item.ChangeLocalDictionary(ActivePlanets);
         }
     }
 
