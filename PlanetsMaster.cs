@@ -9,30 +9,31 @@ public class PlanetsMaster : MonoBehaviour
     private Dictionary<Guid, Planet> ActivePlanets;
 
 
-    public void ChangeDictionary(Guid id) // Delete from dictionary use id
+    public void Add(Guid id, Planet pl) // Add to dictionary another planet
+    {
+        if (!ActivePlanets.ContainsKey(id))
+        {
+            ActivePlanets.Add(id, pl);
+            SendChanges();
+        }
+    }
+
+
+    public void Remove(Guid id) // Delete from dictionary use id
     {
         if (ActivePlanets.ContainsKey(id))
         {
             ActivePlanets.Remove(id);
-            Planet planet;
-            foreach (var item in ActivePlanets)
-            {
-                planet = item.Value;
-                planet.ChangeLocalDictionary(ActivePlanets);
-            }
+            SendChanges();
         }
     }
-    public void ChangeDictionary(Guid id, Planet pl) // Add to dictionary another planet
+
+
+    private void SendChanges()
     {
-        if(!ActivePlanets.ContainsKey(id))
+        foreach (var item in ActivePlanets)
         {
-            ActivePlanets.Add(id, pl);
-            Planet planet;
-            foreach (var item in ActivePlanets)
-            {
-                planet = item.Value;
-                planet.ChangeLocalDictionary(ActivePlanets);
-            }
+            item.Value.RefreshDictionary(ActivePlanets);
         }
     }
 
@@ -45,10 +46,7 @@ public class PlanetsMaster : MonoBehaviour
         {
             ActivePlanets.Add(item.ID, item);
         }
-        foreach (Planet item in allPlanets)
-        {
-            item.ChangeLocalDictionary(ActivePlanets);
-        }
+        SendChanges();
     }
 
 
@@ -62,6 +60,7 @@ public class PlanetsMaster : MonoBehaviour
         {
             item.Value.Move();
         }
-        
     }
+        
+    
 }

@@ -70,19 +70,19 @@ public class Planet : MonoBehaviour
         {
             
             isActive = false;
-            planetsMaster.ChangeDictionary(id);
+            planetsMaster.Remove(id);
         }
         else
         {
             planetsMaster = FindObjectOfType<PlanetsMaster>();
             direction = StartDirection.normalized * StartSpeed;
             isActive = true;
-            planetsMaster.ChangeDictionary(id, this);
+            planetsMaster.Add(id, this);
         }
     }
 
 
-    public void ChangeLocalDictionary(Dictionary<Guid, Planet> dict)
+    public void RefreshDictionary(Dictionary<Guid, Planet> dict)
     {
         ActivePlanets = new Dictionary<Guid, Planet>(dict);
     }
