@@ -6,34 +6,25 @@ using UnityEngine.UI;
 
 public class PlanetsMaster : MonoBehaviour
 {
-
-    // _______
-    bool start = false;
-    public Text text;
-    // _______
     private Dictionary<Guid, Planet> ActivePlanets;
-   
 
 
-    //public void ChangeDictionary(Guid id)
-    //{
-    //    if (InteractionsDictonary.ContainsKey(id))
-    //    {
-    //        InteractionsDictonary.Remove(id);
-    //        Planet planet;
-    //        foreach (var item in InteractionsDictonary)
-    //        {
-    //            planet = item.Value;
-    //            planet.ChangeLocalDictionary(InteractionsDictonary);
-    //        }
-    //    }
-        
-    //}
-
-    public void ChangeDictionary(Guid id, Planet pl)
+    public void ChangeDictionary(Guid id) // Delete from dictionary use id
     {
-        Dictionary<Guid, Planet> tempDict = new Dictionary<Guid, Planet>(ActivePlanets);
-        if(!tempDict.ContainsKey(id))
+        if (ActivePlanets.ContainsKey(id))
+        {
+            ActivePlanets.Remove(id);
+            Planet planet;
+            foreach (var item in ActivePlanets)
+            {
+                planet = item.Value;
+                planet.ChangeLocalDictionary(ActivePlanets);
+            }
+        }
+    }
+    public void ChangeDictionary(Guid id, Planet pl) // Add to dictionary another planet
+    {
+        if(!ActivePlanets.ContainsKey(id))
         {
             ActivePlanets.Add(id, pl);
             Planet planet;
@@ -43,34 +34,13 @@ public class PlanetsMaster : MonoBehaviour
                 planet.ChangeLocalDictionary(ActivePlanets);
             }
         }
-        
     }
 
-    private void FixedUpdate()
-    {
-            if (start)
-            {
-                foreach (var item in ActivePlanets)
-                {
-                    item.Value.Calculate();
-                }
-                foreach (var item in ActivePlanets)
-                {
-                    item.Value.Move();
-                }
-            }
-        
-        
-        if (Input.GetKey(KeyCode.Space))
-        {
-                start = true;
-        }
-        
-    }
+
     private void Start()
     {
         ActivePlanets = new Dictionary<Guid, Planet>();
-        Planet[] allPlanets = GameObject.FindObjectsOfType<Planet>();
+        Planet[] allPlanets = FindObjectsOfType<Planet>();
         foreach (Planet item in allPlanets)
         {
             ActivePlanets.Add(item.ID, item);
@@ -82,4 +52,16 @@ public class PlanetsMaster : MonoBehaviour
     }
 
 
+    private void FixedUpdate()
+    {
+        foreach (var item in ActivePlanets)
+        {
+            item.Value.Calculate();
+        }
+        foreach (var item in ActivePlanets)
+        {
+            item.Value.Move();
+        }
+        
+    }
 }

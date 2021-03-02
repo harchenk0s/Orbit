@@ -8,29 +8,27 @@ public class Planet : MonoBehaviour
     public bool IsStatic;
     public float Mass;
     public float StartSpeed;
-    public Guid ID;
-    public PlanetsMaster PlanetsMaster;
     public Vector3 StartDirection;
-    //public Vector3 StartDirection
-    //{
-    //    get
-    //    {
-    //        Vector3 vec = StartDirection;
-    //        return vec.normalized;
-    //    }
-    //}
 
+    private Guid id;
     private Vector3 direction;
-    public bool isActive = true;
+    private bool isActive = false;
     private Dictionary<Guid, Planet> ActivePlanets;
+    private PlanetsMaster planetsMaster;
+
+    public Guid ID
+    {
+        get { return id; }
+    }
 
 
     void Awake()
     {
-        ID = Guid.NewGuid();
+        id = Guid.NewGuid();
         ActivePlanets = new Dictionary<Guid, Planet>();
-        direction = StartDirection * StartSpeed;
+        planetsMaster = FindObjectOfType<PlanetsMaster>();
     }
+
 
     public void Calculate()
     {
@@ -42,7 +40,7 @@ public class Planet : MonoBehaviour
             Vector3 newDirection;
             foreach (var item in ActivePlanets)
             {
-                if(item.Value.ID != ID)
+                if(item.Value.id != id)
                 {
                     otherPlanet = item.Value;
                     newDirection = otherPlanet.transform.position - transform.position;
@@ -54,14 +52,30 @@ public class Planet : MonoBehaviour
                 }
             }
         }
-
     }
+
 
     public void Move()
     {
         if(!IsStatic && isActive)
         {
             transform.position += direction * 0.1f;
+        }
+    }
+
+
+    public void SwitchActive()
+    {
+        if (isActive)
+        {
+            direction = StartDirection.normalized * StartSpeed;
+            isActive = false;
+            planetsMaster.ChangeDictionary(id);
+        }
+        else
+        {
+            isActive = true;
+            planetsMaster.ChangeDictionary(id, this);
         }
     }
 
