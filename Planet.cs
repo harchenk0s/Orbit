@@ -68,7 +68,6 @@ public class Planet : MonoBehaviour
     {
         if (isActive)
         {
-            
             isActive = false;
             planetsMaster.Remove(id);
         }
