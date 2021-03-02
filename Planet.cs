@@ -68,12 +68,14 @@ public class Planet : MonoBehaviour
     {
         if (isActive)
         {
-            direction = StartDirection.normalized * StartSpeed;
+            
             isActive = false;
             planetsMaster.ChangeDictionary(id);
         }
         else
         {
+            planetsMaster = FindObjectOfType<PlanetsMaster>();
+            direction = StartDirection.normalized * StartSpeed;
             isActive = true;
             planetsMaster.ChangeDictionary(id, this);
         }
