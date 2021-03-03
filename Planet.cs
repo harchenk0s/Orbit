@@ -13,7 +13,7 @@ public class Planet : MonoBehaviour
     private Guid id;
     private Vector3 direction;
     private bool isActive = false;
-    private Dictionary<Guid, Planet> ActivePlanets;
+    private Dictionary<Guid, Planet> activePlanets;
     private PlanetsMaster planetsMaster;
 
     public Guid ID
@@ -21,11 +21,37 @@ public class Planet : MonoBehaviour
         get { return id; }
     }
 
+    public bool IsActive
+    {
+        get
+        {
+            return isActive;
+        }
+
+        set
+        {
+            if (isActive != value)
+            {
+                if (value == true)
+                {
+                    direction = StartDirection.normalized * StartSpeed;
+                    isActive = true;
+                    planetsMaster.Add(id, this);
+                }
+                else
+                {
+                    isActive = false;
+                    planetsMaster.Remove(id);
+                }
+            }
+        }
+    }
+
 
     void Awake()
     {
         id = Guid.NewGuid();
-        ActivePlanets = new Dictionary<Guid, Planet>();
+        activePlanets = new Dictionary<Guid, Planet>();
         planetsMaster = FindObjectOfType<PlanetsMaster>();
     }
 
@@ -38,7 +64,7 @@ public class Planet : MonoBehaviour
             float distance;
             float force;
             Vector3 newDirection;
-            foreach (var item in ActivePlanets)
+            foreach (var item in activePlanets)
             {
                 if(item.Value.id != id)
                 {
@@ -64,25 +90,8 @@ public class Planet : MonoBehaviour
     }
 
 
-    public void SwitchActive()
-    {
-        if (isActive)
-        {
-            isActive = false;
-            planetsMaster.Remove(id);
-        }
-        else
-        {
-            planetsMaster = FindObjectOfType<PlanetsMaster>();
-            direction = StartDirection.normalized * StartSpeed;
-            isActive = true;
-            planetsMaster.Add(id, this);
-        }
-    }
-
-
     public void RefreshDictionary(Dictionary<Guid, Planet> dict)
     {
-        ActivePlanets = new Dictionary<Guid, Planet>(dict);
+        activePlanets = new Dictionary<Guid, Planet>(dict);
     }
 }
