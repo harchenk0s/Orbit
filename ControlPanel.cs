@@ -98,13 +98,68 @@ public class ControlPanel : MonoBehaviour
         }
         
     }
-    void ChangeFOV()
+    public void ChangeFOV(float val)
     {
+        if(val == 0)
+        {
+            cam.orthographicSize = FOV.value;
+        }
+        else
+        {
+            if(cam.orthographicSize < 0.01f)
+            {
+                cam.orthographicSize = 0.01f;
+            }
+            else
+            {
+                cam.orthographicSize += val;
+                FOV.value = cam.orthographicSize;
+            }
+        }
+        
+    }
 
+    public void SetFocus(bool b)
+    {
+        cam.transform.SetParent(ChoosenPlanet.transform, false);
     }
 
     void HideUnhidePanel()
     {
 
+    }
+
+    private void FixedUpdate()
+    {
+        if(Input.GetAxis("Mouse ScrollWheel") != 0)
+        {
+            float axisValue = Input.GetAxis("Mouse ScrollWheel");
+            if(FOV.value < 10)
+            {
+                ChangeFOV(axisValue);
+            }
+            if(FOV.value > 10)
+            {
+                ChangeFOV(axisValue * 3);
+            }
+            if (FOV.value > 50)
+            {
+                ChangeFOV(axisValue * 4);
+            }
+            if (FOV.value > 100)
+            {
+                ChangeFOV(axisValue * 6);
+            }
+            if (FOV.value > 300)
+            {
+                ChangeFOV(axisValue * 7);
+            }
+            if (FOV.value > 500)
+            {
+                ChangeFOV(axisValue * 8);
+            }
+
+
+        }
     }
 }
