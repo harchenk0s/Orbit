@@ -10,17 +10,21 @@ public class ControlPanel : MonoBehaviour
 
     public Toggle isStatic, isActive, isFocus, isTrailOn, isTrailsOneColor;
     public InputField Name, Mass, StartSpeed, X, Y, Z;
-    public Slider FOV;
+    public Text xText, yText, zText;
+    public Slider FOV, TimeScale;
+    public Button StartButton;
 
     private Camera cam;
     private List<Planet> planets = new List<Planet>();
-
+    private PlanetsMaster PM;
     private Planet ChoosenPlanet;
 
     void Start()
     {
         cam = FindObjectOfType<Camera>();
+        PM = FindObjectOfType<PlanetsMaster>();
         FindPlanets();
+
     }
 
     void FindPlanets()
@@ -33,6 +37,14 @@ public class ControlPanel : MonoBehaviour
             dropdown.options.Add(new Dropdown.OptionData { text = item.name });
         }
         ChangePlanet(0);
+    }
+
+    public void StartMoving()
+    {
+        foreach (Planet item in planets)
+        {
+            item.IsActive = true;
+        }
     }
     void Add()
     {
@@ -98,6 +110,7 @@ public class ControlPanel : MonoBehaviour
         }
         
     }
+
     public void ChangeFOV(float val)
     {
         if(val == 0)
@@ -119,6 +132,10 @@ public class ControlPanel : MonoBehaviour
         
     }
 
+    public void ChangeTimeScale(float val)
+    {
+        PM.ChangeTimeScale(TimeScale.value);
+    }
     public void SetFocus(bool b)
     {
         cam.transform.SetParent(ChoosenPlanet.transform, false);
@@ -158,8 +175,11 @@ public class ControlPanel : MonoBehaviour
             {
                 ChangeFOV(axisValue * 8);
             }
-
-
         }
+        xText.text = ChoosenPlanet.transform.position.x.ToString("****");
+        yText.text = ChoosenPlanet.transform.position.y.ToString();
+        zText.text = ChoosenPlanet.transform.position.z.ToString();
     }
+
+    
 }

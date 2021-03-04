@@ -41,7 +41,13 @@ public class PlanetsMaster : MonoBehaviour
         }
     }
 
-
+    public void ChangeTimeScale(float scale)
+    {
+        foreach (var item in ActivePlanets)
+        {
+            item.Value.NewParams(scale);
+        }
+    }
     private void Start()
     {
         ActivePlanets = new Dictionary<Guid, Planet>();
