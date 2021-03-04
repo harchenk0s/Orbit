@@ -6,7 +6,11 @@ using UnityEngine.UI;
 
 public class PlanetsMaster : MonoBehaviour
 {
+    [Range(0.01f, 10)]
+    public float TimeScale = 1;
+
     private Dictionary<Guid, Planet> ActivePlanets;
+    
 
 
     public void Add(Guid id, Planet pl) // Add to dictionary another planet
@@ -33,7 +37,7 @@ public class PlanetsMaster : MonoBehaviour
     {
         foreach (var item in ActivePlanets)
         {
-            item.Value.RefreshDictionary(ActivePlanets);
+            item.Value.NewParams(ActivePlanets);
         }
     }
 
@@ -61,6 +65,5 @@ public class PlanetsMaster : MonoBehaviour
             item.Value.Move();
         }
     }
-        
-    
+
 }

@@ -12,6 +12,7 @@ public class Planet : MonoBehaviour
 
     private Guid id;
     private Vector3 direction;
+    private float timeScale = 1;
     private bool isActive = false;
     private Dictionary<Guid, Planet> activePlanets;
     private PlanetsMaster planetsMaster;
@@ -73,7 +74,7 @@ public class Planet : MonoBehaviour
                     distance = newDirection.magnitude * 10; // The higher the coefficient, the greater the distance of one unit
                     newDirection.Normalize();
                     force = otherPlanet.Mass / Mathf.Pow(distance, 2);
-                    newDirection *= force;
+                    newDirection *= force * timeScale;
                     direction += newDirection;
                 }
             }
@@ -85,13 +86,17 @@ public class Planet : MonoBehaviour
     {
         if(!IsStatic && isActive)
         {
-            transform.position += direction * 0.1f;
+            transform.position += direction * 0.1f * timeScale;
         }
     }
 
 
-    public void RefreshDictionary(Dictionary<Guid, Planet> dict)
+    public void NewParams(Dictionary<Guid, Planet> dict)
     {
         activePlanets = new Dictionary<Guid, Planet>(dict);
+    }
+    public void NewParams(float ts)
+    {
+        timeScale = ts;
     }
 }
