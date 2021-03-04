@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Planet : MonoBehaviour
 {
-    public bool IsStatic;
+    public bool IsStatic = false;
     public float Mass;
     public float StartSpeed;
     public Vector3 StartDirection;

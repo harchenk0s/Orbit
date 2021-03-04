@@ -1,48 +1,109 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ControlPanel : MonoBehaviour
 {
-    private Dropdown dropdown;
+    public Dropdown dropdown;
 
-    private bool isStatic, isActive, isFocus, isTrailOn, isTrailsOneColor; 
-    private Planet[] planets;
+    public Toggle isStatic, isActive, isFocus, isTrailOn, isTrailsOneColor;
+    public InputField Name, Mass, StartSpeed, X, Y, Z;
+    public Slider FOV;
 
-    private Planet ChoosenPlanet
-    {
-        get;
-        set;
-    }
+    private Camera cam;
+    private List<Planet> planets = new List<Planet>();
+
+    private Planet ChoosenPlanet;
 
     void Start()
     {
-        planets = FindObjectsOfType<Planet>();
+        cam = FindObjectOfType<Camera>();
+        FindPlanets();
+    }
+
+    void FindPlanets()
+    {
+        planets.Clear();
+        dropdown.options.Clear();
+        planets.AddRange(FindObjectsOfType<Planet>());
         foreach (Planet item in planets)
         {
             dropdown.options.Add(new Dropdown.OptionData { text = item.name });
         }
-        ChoosenPlanet = planets[0];
-
+        ChangePlanet(0);
     }
-
     void Add()
     {
 
     }
 
-    void Delete()
+    public void Delete()
+    {
+        if (dropdown.options.Count > 1)
+        {
+            Destroy(ChoosenPlanet.gameObject);
+            dropdown.options.RemoveAt(dropdown.value);
+            planets.RemoveAt(dropdown.value);
+            if (dropdown.value - 1 > 0)
+            {
+                dropdown.value--;
+            }
+            else
+            {
+                dropdown.value++;
+            }
+            ChangePlanet(0);
+        }
+    }
+
+    public void ChangePlanet(int n)
+    {
+        ChoosenPlanet = planets[dropdown.value];
+        isStatic.isOn = ChoosenPlanet.IsStatic;
+        isActive.isOn = ChoosenPlanet.IsActive;
+        Name.SetTextWithoutNotify(ChoosenPlanet.name);
+        Mass.text = ChoosenPlanet.Mass.ToString();
+
+    }
+
+    public void ChangeStatic(bool b)
+    {
+        ChoosenPlanet.IsStatic = isStatic.isOn;
+    }
+
+    public void ChangeName(string str)
+    {
+        ChoosenPlanet.name = Name.text;
+        dropdown.captionText.text = Name.text;
+        FindPlanets();
+    }
+
+    public void ChangeMass(string str)
+    {
+        if(str == "")
+        {
+            ChoosenPlanet.Mass = Convert.ToSingle(Mass.text);
+        }
+        if(str == "+")
+        {
+            ChoosenPlanet.Mass++;
+            Mass.text = ChoosenPlanet.Mass.ToString();
+        }
+        if(str == "-")
+        {
+            ChoosenPlanet.Mass--;
+            Mass.text = ChoosenPlanet.Mass.ToString();
+        }
+        
+    }
+    void ChangeFOV()
     {
 
     }
 
-    void ChangePlanet()
-    {
-
-    }
-
-    void ChangeColors()
+    void HideUnhidePanel()
     {
 
     }
