@@ -7,25 +7,25 @@ using UnityEngine.UI;
 public class ControlPanel : MonoBehaviour
 {
     public Dropdown dropdown;
-
-    public Toggle isStatic, isActive, isFocus, isTrailOn, isTrailsOneColor;
+    public Toggle isStatic, isActive, isTrailOn;
     public InputField Name, Mass, StartSpeed, X, Y, Z;
     public Text xText, yText, zText;
     public Slider FOV, TimeScale;
-    public Button StartButton;
+    public GameObject prefabPlanet;
 
     private Camera cam;
     private List<Planet> planets = new List<Planet>();
     private PlanetsMaster PM;
-    private Planet ChoosenPlanet;
+    private Planet choosenPlanet;
+
 
     void Start()
     {
         cam = FindObjectOfType<Camera>();
         PM = FindObjectOfType<PlanetsMaster>();
         FindPlanets();
-
     }
+
 
     void FindPlanets()
     {
@@ -39,6 +39,7 @@ public class ControlPanel : MonoBehaviour
         ChangePlanet(0);
     }
 
+
     public void StartMoving()
     {
         foreach (Planet item in planets)
@@ -46,16 +47,20 @@ public class ControlPanel : MonoBehaviour
             item.IsActive = true;
         }
     }
-    void Add()
-    {
 
+
+    public void Add()
+    {
+        Instantiate(prefabPlanet);
+        FindPlanets();
     }
+
 
     public void Delete()
     {
         if (dropdown.options.Count > 1)
         {
-            Destroy(ChoosenPlanet.gameObject);
+            Destroy(choosenPlanet.gameObject);
             dropdown.options.RemoveAt(dropdown.value);
             planets.RemoveAt(dropdown.value);
             if (dropdown.value - 1 > 0)
@@ -67,49 +72,76 @@ public class ControlPanel : MonoBehaviour
                 dropdown.value++;
             }
             ChangePlanet(0);
+            FindPlanets();
+            SetFocus(false);
         }
     }
 
+
     public void ChangePlanet(int n)
     {
-        ChoosenPlanet = planets[dropdown.value];
-        isStatic.isOn = ChoosenPlanet.IsStatic;
-        isActive.isOn = ChoosenPlanet.IsActive;
-        Name.SetTextWithoutNotify(ChoosenPlanet.name);
-        Mass.text = ChoosenPlanet.Mass.ToString();
+        choosenPlanet = planets[dropdown.value];
+        isStatic.isOn = choosenPlanet.IsStatic;
+        isActive.isOn = choosenPlanet.IsActive;
+        Name.SetTextWithoutNotify(choosenPlanet.name);
+        Mass.text = choosenPlanet.Mass.ToString();
+        StartSpeed.text = choosenPlanet.StartSpeed.ToString();
+        xText.text = choosenPlanet.transform.position.x.ToString();
+        yText.text = choosenPlanet.transform.position.y.ToString();
+        zText.text = choosenPlanet.transform.position.z.ToString();
 
     }
+
 
     public void ChangeStatic(bool b)
     {
-        ChoosenPlanet.IsStatic = isStatic.isOn;
+        choosenPlanet.IsStatic = isStatic.isOn;
     }
+
 
     public void ChangeName(string str)
     {
-        ChoosenPlanet.name = Name.text;
+        choosenPlanet.name = Name.text;
         dropdown.captionText.text = Name.text;
         FindPlanets();
     }
+
 
     public void ChangeMass(string str)
     {
         if(str == "")
         {
-            ChoosenPlanet.Mass = Convert.ToSingle(Mass.text);
+            choosenPlanet.Mass = Convert.ToSingle(Mass.text);
         }
         if(str == "+")
         {
-            ChoosenPlanet.Mass++;
-            Mass.text = ChoosenPlanet.Mass.ToString();
+            choosenPlanet.Mass++;
+            Mass.text = choosenPlanet.Mass.ToString();
         }
         if(str == "-")
         {
-            ChoosenPlanet.Mass--;
-            Mass.text = ChoosenPlanet.Mass.ToString();
+            choosenPlanet.Mass--;
+            Mass.text = choosenPlanet.Mass.ToString();
         }
-        
     }
+
+
+    public void ChangePosition(string str)
+    {
+        if(str == "x")
+        {
+            choosenPlanet.transform.position = new Vector3(Convert.ToSingle(X.text), choosenPlanet.transform.position.y, choosenPlanet.transform.position.z);
+        }
+        if (str == "y")
+        {
+            choosenPlanet.transform.position = new Vector3(choosenPlanet.transform.position.x, Convert.ToSingle(Y.text), choosenPlanet.transform.position.z);
+        }
+        if (str == "z")
+        {
+            choosenPlanet.transform.position = new Vector3(choosenPlanet.transform.position.x, choosenPlanet.transform.position.y, Convert.ToSingle(Z.text));
+        }
+    }
+
 
     public void ChangeFOV(float val)
     {
@@ -129,28 +161,38 @@ public class ControlPanel : MonoBehaviour
                 FOV.value = cam.orthographicSize;
             }
         }
-        
     }
+
 
     public void ChangeTimeScale(float val)
     {
         PM.ChangeTimeScale(TimeScale.value);
     }
+
+
     public void SetFocus(bool b)
     {
-        cam.transform.SetParent(ChoosenPlanet.transform, false);
+        cam.transform.SetParent(choosenPlanet.transform, false);
     }
+
+
+    public void ChangeSpeed(string str)
+    {
+        choosenPlanet.StartSpeed = Convert.ToSingle(StartSpeed.text);
+    }
+
 
     void HideUnhidePanel()
     {
 
     }
 
+
     private void FixedUpdate()
     {
         if(Input.GetAxis("Mouse ScrollWheel") != 0)
         {
-            float axisValue = Input.GetAxis("Mouse ScrollWheel");
+            float axisValue = -Input.GetAxis("Mouse ScrollWheel");
             if(FOV.value < 10)
             {
                 ChangeFOV(axisValue);
@@ -176,9 +218,9 @@ public class ControlPanel : MonoBehaviour
                 ChangeFOV(axisValue * 8);
             }
         }
-        xText.text = ChoosenPlanet.transform.position.x.ToString("****");
-        yText.text = ChoosenPlanet.transform.position.y.ToString();
-        zText.text = ChoosenPlanet.transform.position.z.ToString();
+        xText.text = choosenPlanet.transform.position.x.ToString();
+        yText.text = choosenPlanet.transform.position.y.ToString();
+        zText.text = choosenPlanet.transform.position.z.ToString();
     }
 
     

@@ -12,7 +12,7 @@ public class Planet : MonoBehaviour
 
     private Guid id;
     private Vector3 direction;
-    private float timeScale = 1;
+    private float timeScale;
     private bool isActive = false;
     private Dictionary<Guid, Planet> activePlanets;
     private PlanetsMaster planetsMaster;
@@ -54,6 +54,7 @@ public class Planet : MonoBehaviour
         id = Guid.NewGuid();
         activePlanets = new Dictionary<Guid, Planet>();
         planetsMaster = FindObjectOfType<PlanetsMaster>();
+        timeScale = planetsMaster.TimeScale;
     }
 
 
