@@ -7,73 +7,73 @@ using UnityEngine.UI;
 public class PlanetsMaster : MonoBehaviour
 {
     [Range(0.01f, 10)]
-    public float TimeScale = 1;
+    [SerializeField]
+    private float timeScale = 1;
+    private List<Planet> activePlanets = new List<Planet>();
 
-    private Dictionary<Guid, Planet> ActivePlanets;
+    public float TimeScale
+    {
+        get { return timeScale; }
+        set
+        {
+            if(value > 0 && value < 100)
+            {
+                timeScale = value;
+            }
+        }
+    }
     
 
-
-    public void Add(Guid id, Planet pl) // Add to dictionary another planet
+    public void Add(Planet planet)
     {
-        if (!ActivePlanets.ContainsKey(id))
+        if (!activePlanets.Contains(planet))
         {
-            ActivePlanets.Add(id, pl);
-            SendChanges();
+            activePlanets.Add(planet);
+            planet.UpdateTimeScale(timeScale);
+            NotifyPlanets();
         }
     }
 
 
-    public void Remove(Guid id) // Delete from dictionary use id
+    public void Remove(Planet planet)
     {
-        if (ActivePlanets.ContainsKey(id))
+        if (activePlanets.Contains(planet))
         {
-            ActivePlanets.Remove(id);
-            SendChanges();
+            activePlanets.Remove(planet);
+            NotifyPlanets();
         }
     }
 
 
-    private void SendChanges()
+    private void NotifyPlanets()
     {
-        foreach (var item in ActivePlanets)
+        foreach (Planet item in activePlanets)
         {
-            item.Value.NewParams(ActivePlanets);
+            item.UpdateList(activePlanets);
         }
     }
+
 
     public void ChangeTimeScale(float scale)
     {
-        foreach (var item in ActivePlanets)
+        foreach (Planet item in activePlanets)
         {
-            item.Value.NewParams(scale);
+            item.UpdateTimeScale(scale);
         }
-    }
-    public void FindPlanets()
-    {
-        ActivePlanets = new Dictionary<Guid, Planet>();
-        Planet[] allPlanets = FindObjectsOfType<Planet>();
-        foreach (Planet item in allPlanets)
-        {
-            ActivePlanets.Add(item.ID, item);
-        }
-        SendChanges();
     }
 
 
-    private void Start()
-    {
-        FindPlanets();
-    }
     private void FixedUpdate()
     {
-        foreach (var item in ActivePlanets)
+        foreach (Planet item in activePlanets)
         {
-            item.Value.Calculate();
+            item.Calculate();
         }
-        foreach (var item in ActivePlanets)
+        foreach (Planet item in activePlanets)
         {
-            item.Value.Move();
+            item.Move();
         }
     }
+
 
 }

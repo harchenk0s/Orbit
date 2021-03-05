@@ -10,18 +10,12 @@ public class Planet : MonoBehaviour
     public float StartSpeed;
     public Vector3 StartDirection;
 
-    private Guid id;
+    private List<Planet> activePlanets;
     private Vector3 direction;
-    private float timeScale;
     private bool isActive = false;
-    private Dictionary<Guid, Planet> activePlanets;
     private PlanetsMaster planetsMaster;
-
-    public Guid ID
-    {
-        get { return id; }
-    }
-
+    private float timeScale;
+    
     public bool IsActive
     {
         get
@@ -33,16 +27,16 @@ public class Planet : MonoBehaviour
         {
             if (isActive != value)
             {
-                if (value == true)
+                if (value)
                 {
                     direction = StartDirection.normalized * StartSpeed;
                     isActive = true;
-                    planetsMaster.Add(id, this);
+                    planetsMaster.Add(this);
                 }
                 else
                 {
                     isActive = false;
-                    planetsMaster.Remove(id);
+                    planetsMaster.Remove(this);
                 }
             }
         }
@@ -51,10 +45,8 @@ public class Planet : MonoBehaviour
 
     void Awake()
     {
-        id = Guid.NewGuid();
-        activePlanets = new Dictionary<Guid, Planet>();
+        activePlanets = new List<Planet>();
         planetsMaster = FindObjectOfType<PlanetsMaster>();
-        timeScale = planetsMaster.TimeScale;
     }
 
 
@@ -66,18 +58,15 @@ public class Planet : MonoBehaviour
             float distance;
             float force;
             Vector3 newDirection;
-            foreach (var item in activePlanets)
+            foreach (Planet item in activePlanets)
             {
-                if(item.Value.id != id)
-                {
-                    otherPlanet = item.Value;
-                    newDirection = otherPlanet.transform.position - transform.position;
-                    distance = newDirection.magnitude * 10; // The higher the coefficient, the greater the distance of one unit
-                    newDirection.Normalize();
-                    force = otherPlanet.Mass / Mathf.Pow(distance, 2);
-                    newDirection *= force * timeScale;
-                    direction += newDirection;
-                }
+                otherPlanet = item;
+                newDirection = otherPlanet.transform.position - transform.position;
+                distance = newDirection.magnitude * 10; // The higher the coefficient, the greater the distance of one unit
+                newDirection.Normalize();
+                force = otherPlanet.Mass / Mathf.Pow(distance, 2);
+                newDirection *= force * timeScale;
+                direction += newDirection;
             }
         }
     }
@@ -85,19 +74,27 @@ public class Planet : MonoBehaviour
 
     public void Move()
     {
-        if(!IsStatic && isActive)
+        if(!IsStatic)
         {
-            transform.position += direction * 0.1f * timeScale;
+            transform.Translate(direction * 0.1f * timeScale);
         }
     }
 
 
-    public void NewParams(Dictionary<Guid, Planet> dict)
+    public void UpdateList(List<Planet> planetsList)
     {
-        activePlanets = new Dictionary<Guid, Planet>(dict);
+        activePlanets = new List<Planet>(planetsList);
+        activePlanets.Remove(this);
     }
-    public void NewParams(float ts)
+
+
+    public void UpdateTimeScale(float ts)
     {
         timeScale = ts;
+    }
+
+    private void OnDestroy()
+    {
+        planetsMaster.Remove(this);
     }
 }
