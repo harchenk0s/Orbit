@@ -42,6 +42,7 @@ public class ControlPanel : MonoBehaviour
 
     public void StartMoving()
     {
+        FindPlanets();
         foreach (Planet item in planets)
         {
             item.IsActive = true;
@@ -58,6 +59,10 @@ public class ControlPanel : MonoBehaviour
 
     public void Delete()
     {
+        if (choosenPlanet.GetComponentInChildren<Camera>())
+        {
+            SetFocus(false);
+        }
         if (dropdown.options.Count > 1)
         {
             Destroy(choosenPlanet.gameObject);
@@ -72,8 +77,7 @@ public class ControlPanel : MonoBehaviour
                 dropdown.value++;
             }
             ChangePlanet(0);
-            FindPlanets();
-            SetFocus(false);
+            PM.FindPlanets();
         }
     }
 
@@ -172,7 +176,15 @@ public class ControlPanel : MonoBehaviour
 
     public void SetFocus(bool b)
     {
-        cam.transform.SetParent(choosenPlanet.transform, false);
+        if (!b)
+        {
+            cam.transform.parent = null;
+        }
+        else
+        {
+            cam.transform.SetParent(choosenPlanet.transform, false);
+        }
+        
     }
 
 

@@ -48,7 +48,7 @@ public class PlanetsMaster : MonoBehaviour
             item.Value.NewParams(scale);
         }
     }
-    private void Start()
+    public void FindPlanets()
     {
         ActivePlanets = new Dictionary<Guid, Planet>();
         Planet[] allPlanets = FindObjectsOfType<Planet>();
@@ -60,6 +60,10 @@ public class PlanetsMaster : MonoBehaviour
     }
 
 
+    private void Start()
+    {
+        FindPlanets();
+    }
     private void FixedUpdate()
     {
         foreach (var item in ActivePlanets)
