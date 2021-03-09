@@ -9,45 +9,45 @@ public class ControlPanel : MonoBehaviour
     public Dropdown dropdown;
     public Toggle isStatic, isActive, isTrailOn;
     public Slider FOV, TimeScale;
-    [SerializeField]
-    private GameObject prefabPlanet;
+    public Button SetFocusBtn, AddBtn, DeleteBtn, PlayBtn, StopBtn;
+    public Text TimeMultiplierText;
 
     private Camera cam;
     private List<Planet> allPlanets = new List<Planet>();
-    private PlanetsMaster PM;
     private Planet choosenPlanet;
+    private PlanetsMaster PM;
+    
 
 
     void Start()
     {
         cam = FindObjectOfType<Camera>();
         PM = FindObjectOfType<PlanetsMaster>();
-        FindPlanets();
-
-    }
-
-
-    void FindPlanets()
-    {
-        dropdown.options.Clear();
-        foreach (Planet item in allPlanets)
-        {
-            dropdown.options.Add(new Dropdown.OptionData { text = item.name });
-        }
+        RefreshDropdown();
         ChangePlanet(0);
     }
 
 
-    public void StartMoving()
+    void RefreshDropdown()
     {
+        dropdown.options.Clear();
+        RefreshPlanetsList();
+        foreach (Planet item in allPlanets)
+        {
+            dropdown.options.Add(new Dropdown.OptionData { text = item.name });
+        }
     }
 
 
+    void RefreshPlanetsList()
+    {
+        allPlanets.Clear();
+        allPlanets.AddRange(FindObjectsOfType<Planet>());
+    }
+
     public void Add()
     {
-        Instantiate(prefabPlanet);
-        dropdown.value = 0;
-        FindPlanets();
+
     }
 
 
@@ -57,36 +57,39 @@ public class ControlPanel : MonoBehaviour
         {
             SetFocus(false);
         }
-        if (dropdown.options.Count > 1)
+        Destroy(choosenPlanet.gameObject);
+        dropdown.options.RemoveAt(dropdown.value);
+        allPlanets.Remove(choosenPlanet);
+        dropdown.RefreshShownValue();
+        ChangePlanet(0);
+    }
+
+
+    public void StopPlanets()
+    {
+        foreach (Planet item in allPlanets)
         {
-            Destroy(choosenPlanet.gameObject);
-            dropdown.options.RemoveAt(dropdown.value);
-            if (dropdown.value - 1 > 0)
-            {
-                dropdown.value--;
-            }
-            else
-            {
-                dropdown.value++;
-            }
-            ChangePlanet(0);
+            item.IsActive = false;
+            item.transform.position = item.StartPosition;
         }
     }
 
-
+    public void PlayPlanets()
+    {
+        foreach (Planet item in allPlanets)
+        {
+            item.IsActive = true;
+        }
+    }
     public void ChangePlanet(int n)
     {
-
+        choosenPlanet = allPlanets[dropdown.value];
+        isActive.isOn = choosenPlanet.IsActive;
+        isStatic.isOn = choosenPlanet.IsStatic;
     }
 
 
-    public void ChangeStatic(bool b)
-    {
-        choosenPlanet.IsStatic = isStatic.isOn;
-    }
-
-
-    public void ChangeFOV(float val)
+    public void SetFOV(float val)
     {
         if (val == 0)
         {
@@ -107,9 +110,10 @@ public class ControlPanel : MonoBehaviour
     }
 
 
-    public void ChangeTimeScale(float val)
+    public void SetTimeScale(float val)
     {
-        PM.ChangeTimeScale(TimeScale.value);
+        PM.TimeScale = TimeScale.value;
+        TimeMultiplierText.text = TimeScale.value.ToString("F2") + "x";
     }
 
 
@@ -129,10 +133,12 @@ public class ControlPanel : MonoBehaviour
 
     public void SetActive(bool b)
     {
-
+        choosenPlanet.IsActive = isActive.isOn;
     }
 
-    private void FixedUpdate()
+
+    public void SetStatic(bool b)
     {
+        choosenPlanet.IsStatic = isStatic.isOn;
     }
 }

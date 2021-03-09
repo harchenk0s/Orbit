@@ -13,7 +13,7 @@ public class PlanetsMaster : MonoBehaviour
         get { return timeScale; }
         set
         {
-            if(value > 0 && value < 100)
+            if(value >= 0 && value < 100)
             {
                 timeScale = value;
                 ChangeTimeScale(timeScale);
@@ -52,7 +52,7 @@ public class PlanetsMaster : MonoBehaviour
     }
 
 
-    public void ChangeTimeScale(float scale)
+    private void ChangeTimeScale(float scale)
     {
         foreach (Planet item in activePlanets)
         {
@@ -72,7 +72,4 @@ public class PlanetsMaster : MonoBehaviour
             item.Move();
         }
     }
-
-
-
 }

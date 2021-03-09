@@ -9,6 +9,7 @@ public class Planet : MonoBehaviour
     public float Mass;
     public float StartSpeed;
     public Vector3 StartDirection;
+    public Vector3 StartPosition;
 
     private List<Planet> activePlanets;
     private Vector3 direction;
@@ -32,6 +33,7 @@ public class Planet : MonoBehaviour
                     direction = StartDirection.normalized * StartSpeed;
                     isActive = true;
                     planetsMaster.Add(this);
+                    StartPosition = transform.position;
                 }
                 else
                 {
@@ -47,6 +49,7 @@ public class Planet : MonoBehaviour
     {
         activePlanets = new List<Planet>();
         planetsMaster = FindObjectOfType<PlanetsMaster>();
+        StartPosition = transform.position;
     }
 
 
