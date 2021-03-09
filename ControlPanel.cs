@@ -15,14 +15,20 @@ public class ControlPanel : MonoBehaviour
     private Camera cam;
     private List<Planet> allPlanets = new List<Planet>();
     private Planet choosenPlanet;
-    private PlanetsMaster PM;
-    
+    private PlanetsMaster planetsMaster;
+    private AddingWindow addingWindow;
+
+    public Planet ChoosenPlanet
+    {
+        get { return choosenPlanet; }
+    }
 
 
     void Start()
     {
         cam = FindObjectOfType<Camera>();
-        PM = FindObjectOfType<PlanetsMaster>();
+        planetsMaster = FindObjectOfType<PlanetsMaster>();
+        addingWindow = FindObjectOfType<AddingWindow>();
         RefreshDropdown();
         ChangePlanet(0);
     }
@@ -47,7 +53,7 @@ public class ControlPanel : MonoBehaviour
 
     public void Add()
     {
-
+        addingWindow.gameObject.SetActive(true);
     }
 
 
@@ -116,7 +122,7 @@ public class ControlPanel : MonoBehaviour
 
     public void SetTimeScale(float val)
     {
-        PM.TimeScale = TimeScale.value;
+        planetsMaster.TimeScale = TimeScale.value;
         TimeMultiplierText.text = TimeScale.value.ToString("F2") + "x";
     }
 
