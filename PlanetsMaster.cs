@@ -2,12 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class PlanetsMaster : MonoBehaviour
 {
-    [Range(0.01f, 10)]
-    [SerializeField]
     private float timeScale = 1;
     private List<Planet> activePlanets = new List<Planet>();
 
@@ -19,6 +16,7 @@ public class PlanetsMaster : MonoBehaviour
             if(value > 0 && value < 100)
             {
                 timeScale = value;
+                ChangeTimeScale(timeScale);
             }
         }
     }
@@ -74,6 +72,7 @@ public class PlanetsMaster : MonoBehaviour
             item.Move();
         }
     }
+
 
 
 }
