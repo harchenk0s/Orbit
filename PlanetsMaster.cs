@@ -20,6 +20,21 @@ public class PlanetsMaster : MonoBehaviour
             }
         }
     }
+
+    public bool IsStop
+    {
+        get
+        {
+            if(activePlanets.Count > 0)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+    }
     
 
     public void Add(Planet planet)

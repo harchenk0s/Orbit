@@ -72,6 +72,8 @@ public class ControlPanel : MonoBehaviour
             item.IsActive = false;
             item.transform.position = item.StartPosition;
         }
+        isActive.isOn = choosenPlanet.IsActive;
+        isStatic.isOn = choosenPlanet.IsStatic;
     }
 
     public void PlayPlanets()
@@ -80,6 +82,8 @@ public class ControlPanel : MonoBehaviour
         {
             item.IsActive = true;
         }
+        isActive.isOn = choosenPlanet.IsActive;
+        isStatic.isOn = choosenPlanet.IsStatic;
     }
     public void ChangePlanet(int n)
     {
