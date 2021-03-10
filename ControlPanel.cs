@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class ControlPanel : MonoBehaviour
 {
-    public AddingWindow AddingWindow;
+    public SettingsWindow Settings;
     public Dropdown DropdownPlanets;
     public Toggle IsStatic, IsActive, IsTrailOn;
     public GameObject Prefab;
@@ -50,7 +50,7 @@ public class ControlPanel : MonoBehaviour
         DropdownPlanets.value = 0;
         ChangePlanet();
         DropdownPlanets.RefreshShownValue();
-        AddingWindow.gameObject.SetActive(true);
+        Settings.gameObject.SetActive(true);
     }
 
 
@@ -75,7 +75,7 @@ public class ControlPanel : MonoBehaviour
 
     public void OpenSettings()
     {
-        AddingWindow.gameObject.SetActive(true);
+        Settings.gameObject.SetActive(true);
     }
 
 

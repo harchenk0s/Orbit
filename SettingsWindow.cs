@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AddingWindow : MonoBehaviour
+public class SettingsWindow : MonoBehaviour
 {
-    public InputField nameField, massField, speedField;
-    public InputField posXField, posYField, posZField;
-    public InputField dirXField, dirYField, dirZField;
+    public InputField NameField, MassField, SpeedField;
+    public InputField PosXField, PosYField, PosZField;
+    public InputField DirXField, DirYField, DirZField;
+    public InputField SizeField;
+    public Slider SizeSlider, TrailSlider;
     public Image ColorPlanet, ColorTrail;
     public GameObject ShadowPanel;
     
@@ -20,6 +22,7 @@ public class AddingWindow : MonoBehaviour
     private bool isColorPickingStart = false;
     private PlanetsMaster planetsMaster;
     private Planet planet;
+    private float tmpSize, tmpTrail;
 
     private void Awake()
     {
@@ -35,6 +38,11 @@ public class AddingWindow : MonoBehaviour
         RefreshFields(planetsMaster.IsStop);
         ColorPlanet.color = planet.GetComponent<SpriteRenderer>().color;
         ColorTrail.color = trail.colorGradient.colorKeys[0].color;
+        tmpSize = planet.transform.localScale.x;
+        tmpTrail = trail.startWidth;
+        SizeSlider.value = planet.transform.localScale.x;
+        TrailSlider.value = trail.startWidth;
+        SizeField.text = planet.transform.localScale.x.ToString("F4");
     }
 
     private void OnDisable()
@@ -47,12 +55,12 @@ public class AddingWindow : MonoBehaviour
     {
         if (planetsMaster.IsStop)
         {
-            planet.name = nameField.text;
-            planet.Mass = Convert.ToSingle(massField.text);
-            planet.StartSpeed = Convert.ToSingle(speedField.text);
-            planet.transform.position = new Vector3(Convert.ToSingle(posXField.text), Convert.ToSingle(posYField.text), Convert.ToSingle(posZField.text));
+            planet.name = NameField.text;
+            planet.Mass = Convert.ToSingle(MassField.text);
+            planet.StartSpeed = Convert.ToSingle(SpeedField.text);
+            planet.transform.position = new Vector3(Convert.ToSingle(PosXField.text), Convert.ToSingle(PosYField.text), Convert.ToSingle(PosZField.text));
             planet.StartPosition = planet.transform.position;
-            planet.StartDirection = new Vector3(Convert.ToSingle(dirXField.text), Convert.ToSingle(dirYField.text), Convert.ToSingle(dirZField.text));
+            planet.StartDirection = new Vector3(Convert.ToSingle(DirXField.text), Convert.ToSingle(DirYField.text), Convert.ToSingle(DirZField.text));
         }
         planet.GetComponent<SpriteRenderer>().color = ColorPlanet.color;
         trail.colorGradient = OneColorGradient(ColorTrail.color);
@@ -64,28 +72,30 @@ public class AddingWindow : MonoBehaviour
 
     private void RefreshFields(bool interactableValue)
     {
-        nameField.text = planet.name;
-        massField.text = planet.Mass.ToString();
-        speedField.text = planet.StartSpeed.ToString();
-        posXField.text = planet.StartPosition.x.ToString("F5");
-        posYField.text = planet.StartPosition.y.ToString("F5");
-        posZField.text = planet.StartPosition.z.ToString("F5");
-        dirXField.text = planet.StartDirection.x.ToString("F3");
-        dirYField.text = planet.StartDirection.y.ToString("F3");
-        dirZField.text = planet.StartDirection.z.ToString("F3");
-        massField.interactable = interactableValue;
-        speedField.interactable = interactableValue;
-        posXField.interactable = interactableValue;
-        posYField.interactable = interactableValue;
-        posZField.interactable = interactableValue;
-        dirXField.interactable = interactableValue;
-        dirYField.interactable = interactableValue;
-        dirZField.interactable = interactableValue;
+        NameField.text = planet.name;
+        MassField.text = planet.Mass.ToString();
+        SpeedField.text = planet.StartSpeed.ToString();
+        PosXField.text = planet.StartPosition.x.ToString("F5");
+        PosYField.text = planet.StartPosition.y.ToString("F5");
+        PosZField.text = planet.StartPosition.z.ToString("F5");
+        DirXField.text = planet.StartDirection.x.ToString("F3");
+        DirYField.text = planet.StartDirection.y.ToString("F3");
+        DirZField.text = planet.StartDirection.z.ToString("F3");
+        MassField.interactable = interactableValue;
+        SpeedField.interactable = interactableValue;
+        PosXField.interactable = interactableValue;
+        PosYField.interactable = interactableValue;
+        PosZField.interactable = interactableValue;
+        DirXField.interactable = interactableValue;
+        DirYField.interactable = interactableValue;
+        DirZField.interactable = interactableValue;
     }
 
 
     public void CloseWindow()
     {
+        planet.transform.localScale = new Vector3(tmpSize, tmpSize, 1);
+        trail.startWidth = tmpTrail;
         this.gameObject.SetActive(false);
     }
 
@@ -105,6 +115,25 @@ public class AddingWindow : MonoBehaviour
     }
 
 
+    public void SetSize(float value)
+    {
+        planet.transform.localScale = new Vector3(value, value, 1);
+        SizeField.text = planet.transform.localScale.x.ToString("F2");
+    }
+
+
+    public void SetSize(string value)
+    {
+        float valueConv = Convert.ToSingle(value);
+        planet.transform.localScale = new Vector3(valueConv, valueConv, 1);
+        SizeSlider.value = valueConv;
+    }
+
+
+    public void SetWidthTrail(float value)
+    {
+        trail.startWidth = value;
+    }
     IEnumerator ReadPixelColor()
     {
         yield return new WaitForEndOfFrame();
