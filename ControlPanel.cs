@@ -36,6 +36,7 @@ public class ControlPanel : MonoBehaviour
         DropdownPlanets.options.Clear();
         allPlanets.Clear();
         allPlanets.AddRange(FindObjectsOfType<Planet>());
+
         foreach (Planet item in allPlanets)
         {
             DropdownPlanets.options.Add(new Dropdown.OptionData { text = item.name });
@@ -60,14 +61,17 @@ public class ControlPanel : MonoBehaviour
         {
             SetFocus(false);
         }
+
         Destroy(ChoosenPlanet.gameObject);
         DropdownPlanets.options.RemoveAt(DropdownPlanets.value);
         allPlanets.Remove(ChoosenPlanet);
+
         if(allPlanets.Count == 0)
         {
             Add();
             return;
         }
+
         ChangePlanet();
         DropdownPlanets.RefreshShownValue();
     }
@@ -86,6 +90,7 @@ public class ControlPanel : MonoBehaviour
             item.IsActive = false;
             item.transform.position = item.StartPosition;
         }
+
         ChangePlanet();
     }
 
@@ -96,6 +101,7 @@ public class ControlPanel : MonoBehaviour
         {
             item.IsActive = true;
         }
+
         ChangePlanet();
     }
 
@@ -106,6 +112,7 @@ public class ControlPanel : MonoBehaviour
         {
             DropdownPlanets.value--;
         }
+
         ChoosenPlanet = allPlanets[DropdownPlanets.value];
         IsActive.isOn = ChoosenPlanet.IsActive;
         IsStatic.isOn = ChoosenPlanet.IsStatic;

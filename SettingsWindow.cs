@@ -24,10 +24,12 @@ public class SettingsWindow : MonoBehaviour
     private Planet planet;
     private float tmpSize, tmpTrail;
 
+
     private void Awake()
     {
         controlPanel = FindObjectOfType<ControlPanel>();
     }
+
 
     private void OnEnable()
     {
@@ -44,6 +46,7 @@ public class SettingsWindow : MonoBehaviour
         TrailSlider.value = trail.startWidth;
         SizeField.text = planet.transform.localScale.x.ToString("F4");
     }
+
 
     private void OnDisable()
     {
@@ -62,6 +65,7 @@ public class SettingsWindow : MonoBehaviour
             planet.StartPosition = planet.transform.position;
             planet.StartDirection = new Vector3(Convert.ToSingle(DirXField.text), Convert.ToSingle(DirYField.text), Convert.ToSingle(DirZField.text));
         }
+
         planet.GetComponent<SpriteRenderer>().color = ColorPlanet.color;
         trail.colorGradient = OneColorGradient(ColorTrail.color);
         this.gameObject.SetActive(false);
@@ -81,6 +85,7 @@ public class SettingsWindow : MonoBehaviour
         DirXField.text = planet.StartDirection.x.ToString("F3");
         DirYField.text = planet.StartDirection.y.ToString("F3");
         DirZField.text = planet.StartDirection.z.ToString("F3");
+
         MassField.interactable = interactableValue;
         SpeedField.interactable = interactableValue;
         PosXField.interactable = interactableValue;
@@ -106,10 +111,12 @@ public class SettingsWindow : MonoBehaviour
         {
             tmpImage = ColorPlanet;
         }
+
         if(str == "Trail")
         {
             tmpImage = ColorTrail;
         }
+
         tex = new Texture2D(1, 1, TextureFormat.RGB24, false);
         isColorPickingStart = true;
     }
@@ -134,6 +141,8 @@ public class SettingsWindow : MonoBehaviour
     {
         trail.startWidth = value;
     }
+
+
     IEnumerator ReadPixelColor()
     {
         yield return new WaitForEndOfFrame();
@@ -165,12 +174,15 @@ public class SettingsWindow : MonoBehaviour
         gradient.SetKeys(colorKey, alphaKey);
         return gradient;
     }
+
+
     private void Update()
     {
         if (isColorPickingStart)
         {
             StartCoroutine(ReadPixelColor());
             tmpImage.color = color;
+
             if (Input.GetMouseButtonDown(0))
             {
                 isColorPickingStart = false;

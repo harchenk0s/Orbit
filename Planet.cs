@@ -65,6 +65,7 @@ public class Planet : MonoBehaviour
             float distance;
             float force;
             Vector3 newDirection;
+
             foreach (Planet item in activePlanets)
             {
                 otherPlanet = item;
