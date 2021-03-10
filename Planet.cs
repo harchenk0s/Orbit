@@ -101,6 +101,12 @@ public class Planet : MonoBehaviour
     }
 
 
+    public void SetTrail(bool b)
+    {
+        trail.gameObject.SetActive(b);
+    }
+
+
     public TrailRenderer GetTrail()
     {
         return trail;
