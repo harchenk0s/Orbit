@@ -16,6 +16,7 @@ public class Planet : MonoBehaviour
     private bool isActive = false;
     private PlanetsMaster planetsMaster;
     private float timeScale;
+    private TrailRenderer trail;
     
     public bool IsActive
     {
@@ -34,9 +35,11 @@ public class Planet : MonoBehaviour
                     isActive = true;
                     planetsMaster.Add(this);
                     StartPosition = transform.position;
+                    trail.time = 200;
                 }
                 else
                 {
+                    trail.time = 0;
                     isActive = false;
                     planetsMaster.Remove(this);
                 }
@@ -50,6 +53,7 @@ public class Planet : MonoBehaviour
         activePlanets = new List<Planet>();
         planetsMaster = FindObjectOfType<PlanetsMaster>();
         StartPosition = transform.position;
+        trail = GetComponentInChildren<TrailRenderer>();
     }
 
 
@@ -95,6 +99,13 @@ public class Planet : MonoBehaviour
     {
         timeScale = ts;
     }
+
+
+    public TrailRenderer GetTrail()
+    {
+        return trail;
+    }
+
 
     private void OnDestroy()
     {

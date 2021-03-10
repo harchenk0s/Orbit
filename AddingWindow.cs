@@ -12,6 +12,7 @@ public class AddingWindow : MonoBehaviour
     public GameObject ShadowPanel;
     
     private ControlPanel controlPanel;
+    private TrailRenderer trail;
     private PlanetsMaster planetsMaster;
     private Planet planet;
 
@@ -25,6 +26,7 @@ public class AddingWindow : MonoBehaviour
         planet = controlPanel.ChoosenPlanet;
         planetsMaster = FindObjectOfType<PlanetsMaster>();
         ShadowPanel.SetActive(true);
+        trail = planet.GetTrail();
         if (!planetsMaster.IsStop)
         {
             RefreshFields(false);
@@ -61,10 +63,13 @@ public class AddingWindow : MonoBehaviour
         dirYField.interactable = interactableValue;
         dirZField.interactable = interactableValue;
     }
+
+
     public void CloseWindow()
     {
         this.gameObject.SetActive(false);
     }
+
 
     public void AcceptChanges()
     {
@@ -74,8 +79,11 @@ public class AddingWindow : MonoBehaviour
             planet.Mass = Convert.ToSingle(massField.text);
             planet.StartSpeed = Convert.ToSingle(speedField.text);
             planet.transform.position = new Vector3(Convert.ToSingle(posXField.text), Convert.ToSingle(posYField.text), Convert.ToSingle(posZField.text));
-            planet.StartPosition = new Vector3(Convert.ToSingle(posXField.text), Convert.ToSingle(posYField.text), Convert.ToSingle(posZField.text));
+            planet.StartPosition = planet.transform.position;
             planet.StartDirection = new Vector3(Convert.ToSingle(dirXField.text), Convert.ToSingle(dirYField.text), Convert.ToSingle(dirZField.text));
         }
+        this.gameObject.SetActive(false);
+        controlPanel.RefreshDropdown();
+        controlPanel.DropdownPlanets.RefreshShownValue();
     }
 }
