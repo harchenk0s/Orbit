@@ -16,7 +16,7 @@ public class PlanetsMaster : MonoBehaviour
             if(value >= 0 && value < 100)
             {
                 timeScale = value;
-                ChangeTimeScale(timeScale);
+                NotifyTimeScale(timeScale);
             }
         }
     }
@@ -67,7 +67,7 @@ public class PlanetsMaster : MonoBehaviour
     }
 
 
-    private void ChangeTimeScale(float scale)
+    private void NotifyTimeScale(float scale)
     {
         foreach (Planet item in activePlanets)
         {
