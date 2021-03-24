@@ -35,7 +35,6 @@ public class Planet : MonoBehaviour
                     isActive = true;
                     planetsMaster.Add(this);
                     StartPosition = transform.position;
-                    trail.time = 200;
                 }
                 else
                 {
